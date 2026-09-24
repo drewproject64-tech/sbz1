@@ -1,22 +1,26 @@
-# SB24GZ - Clear Channels
+# TextLab TG
 
-A simple Telegram-native channel discovery bot with exactly three core user functions:
+TextLab TG is a Telegram-native text utility bot with three practical tools:
 
-1. Search Channels
-2. Browse Channels
-3. Featured Channels
+1. Clean Text — removes extra spaces and blank lines.
+2. Count Text — counts characters, words, and lines.
+3. Format Text — converts text to uppercase, lowercase, or title case.
+
+All processing happens inside Telegram. The bot does not redirect users to an external website.
 
 ## Local setup
 
 1. Copy `.env.example` to `.env`.
 2. Set `BOT_TOKEN`.
-3. Install dependencies: `pip install -r requirements.txt`
-4. Start the bot: `python -m bot.main`
-
-SQLite is created automatically.
+3. Install dependencies:
+   `pip install -r requirements.txt`
+4. Start:
+   `python -m bot.main`
 
 ## Render
 
-Deploy as a worker using the included `render.yaml` and set `BOT_TOKEN` as a secret environment variable.
+Deploy as a worker using `render.yaml` and set `BOT_TOKEN` as a secret environment variable.
 
-The core user experience works directly inside Telegram and does not require an external website.
+## Telegram Ads destination checklist
+
+The advertised destination is the bot itself. Its advertised functions are implemented inside the bot, with no external landing page or redirect flow.
