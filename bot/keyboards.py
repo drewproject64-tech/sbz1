@@ -4,9 +4,9 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 def main_menu() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="🔎 Search Channels", callback_data="search")],
-            [InlineKeyboardButton(text="📂 Browse Channels", callback_data="browse")],
-            [InlineKeyboardButton(text="⭐ Featured Channels", callback_data="featured")],
+            [InlineKeyboardButton(text="🧹 Clean Text", callback_data="clean")],
+            [InlineKeyboardButton(text="🔢 Count Text", callback_data="count")],
+            [InlineKeyboardButton(text="🔤 Format Text", callback_data="format")],
         ]
     )
 
@@ -19,19 +19,12 @@ def back_menu() -> InlineKeyboardMarkup:
     )
 
 
-def categories_menu(categories: list[str]) -> InlineKeyboardMarkup:
-    rows = [
-        [InlineKeyboardButton(text=f"📁 {category}", callback_data=f"cat:{category}")]
-        for category in categories
-    ]
-    rows.append([InlineKeyboardButton(text="⬅️ Main Menu", callback_data="main")])
-    return InlineKeyboardMarkup(inline_keyboard=rows)
-
-
-def search_result_menu() -> InlineKeyboardMarkup:
+def format_menu() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="🔄 Search Again", callback_data="search")],
+            [InlineKeyboardButton(text="UPPERCASE", callback_data="fmt:upper")],
+            [InlineKeyboardButton(text="lowercase", callback_data="fmt:lower")],
+            [InlineKeyboardButton(text="Title Case", callback_data="fmt:title")],
             [InlineKeyboardButton(text="⬅️ Main Menu", callback_data="main")],
         ]
     )
