@@ -1,26 +1,20 @@
-# SB24GZ Word Bot
+# Word Tools Bot
 
-SB24GZ Word Bot is a Telegram-native word and text utility bot with three practical tools:
+Word Tools Bot is a simple Telegram utility with three text functions:
 
-1. Clean Text — removes extra spaces and blank lines.
-2. Count Text — counts characters, words, and lines.
-3. Format Text — converts text to uppercase, lowercase, or title case.
+- Clean Text — removes repeated spaces and blank lines.
+- Count Text — counts words, characters, and lines.
+- Format Text — converts text to uppercase, lowercase, or title case.
 
-All processing happens directly inside Telegram. The bot does not redirect users to an external website.
+The bot performs its functions directly in Telegram. It has no external website, landing page, redirects, channels, promotions, payments, gambling, betting, gaming, or financial features.
 
-## Local setup
+## Setup
 
 1. Copy `.env.example` to `.env`.
 2. Set `BOT_TOKEN`.
-3. Install dependencies:
-   `pip install -r requirements.txt`
-4. Start:
-   `python -m bot.main`
+3. Install dependencies with `pip install -r requirements.txt`.
+4. Start with `python -m bot.main`.
 
 ## Render
 
-Deploy as a worker using `render.yaml` and set `BOT_TOKEN` as a secret environment variable.
-
-## Telegram Ads destination checklist
-
-The advertised destination is the SB24GZ Word Bot itself. Its advertised functions are implemented directly inside the bot, with no external landing page or redirect flow.
+Deploy the repository as a Docker worker and set `BOT_TOKEN` as a secret environment variable.
