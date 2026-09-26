@@ -1,6 +1,6 @@
 services:
   - type: worker
-    name: sb24gz-word-bot
+    name: word-tools-bot
     runtime: docker
     dockerfilePath: ./Dockerfile
     envVars:
