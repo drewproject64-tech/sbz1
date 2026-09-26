@@ -1,6 +1,6 @@
 services:
   - type: worker
-    name: textlab-tg
+    name: sb24gz-word-bot
     runtime: docker
     dockerfilePath: ./Dockerfile
     envVars:
