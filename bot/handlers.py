@@ -14,15 +14,15 @@ router = Router()
 
 
 class ToolState(StatesGroup):
-    waiting_clean = State()
-    waiting_count = State()
-    waiting_format = State()
+    clean = State()
+    count = State()
+    format_text = State()
 
 
 def home_text() -> str:
     return (
-        "<b>SB24GZ Word Bot</b>\n\n"
-        "Simple word and text tools that work directly inside Telegram.\n\n"
+        "<b>Word Tools Bot</b>\n\n"
+        "Simple tools for working with text directly in Telegram.\n\n"
         "Choose a tool:"
     )
 
@@ -36,11 +36,11 @@ async def start(message: Message, state: FSMContext) -> None:
 @router.message(Command("help"))
 async def help_command(message: Message) -> None:
     await message.answer(
-        "<b>SB24GZ Word Bot</b>\n\n"
-        "Clean Text removes extra spaces and blank lines.\n"
-        "Count Text counts characters, words, and lines.\n"
+        "<b>Word Tools Bot</b>\n\n"
+        "Clean Text removes repeated spaces and blank lines.\n"
+        "Count Text counts words, characters, and lines.\n"
         "Format Text changes text case.\n\n"
-        "Send /start to open the tools.",
+        "Choose a tool from the menu.",
         reply_markup=main_menu(),
     )
 
@@ -48,7 +48,7 @@ async def help_command(message: Message) -> None:
 @router.message(Command("cancel"))
 async def cancel(message: Message, state: FSMContext) -> None:
     await state.clear()
-    await message.answer("Cancelled. Choose a tool:", reply_markup=main_menu())
+    await message.answer("Cancelled.", reply_markup=main_menu())
 
 
 @router.callback_query(F.data == "main")
@@ -60,27 +60,28 @@ async def main_menu_callback(call: CallbackQuery, state: FSMContext) -> None:
 
 @router.callback_query(F.data == "clean")
 async def clean_start(call: CallbackQuery, state: FSMContext) -> None:
-    await state.set_state(ToolState.waiting_clean)
+    await state.set_state(ToolState.clean)
     await call.message.edit_text(
         "<b>Clean Text</b>\n\n"
-        "Send the text you want to clean. Extra spaces and blank lines will be removed.\n\n"
-        "Use /cancel to stop.",
+        "Send text to remove repeated spaces and blank lines.",
         reply_markup=back_menu(),
     )
     await call.answer()
 
 
-@router.message(ToolState.waiting_clean)
+@router.message(ToolState.clean)
 async def clean_text(message: Message, state: FSMContext) -> None:
     text = (message.text or "").strip()
     if not text:
-        await message.answer("Please send some text.", reply_markup=back_menu())
+        await message.answer("Please send text.", reply_markup=back_menu())
         return
     if len(text) > 4000:
         await message.answer("Please keep the text under 4,000 characters.", reply_markup=back_menu())
         return
 
-    cleaned = "\n".join(" ".join(line.split()) for line in text.splitlines() if line.strip())
+    cleaned = "\n".join(
+        " ".join(line.split()) for line in text.splitlines() if line.strip()
+    )
     await state.clear()
     await message.answer(
         f"<b>Cleaned Text</b>\n\n<code>{escape(cleaned)}</code>",
@@ -90,53 +91,51 @@ async def clean_text(message: Message, state: FSMContext) -> None:
 
 @router.callback_query(F.data == "count")
 async def count_start(call: CallbackQuery, state: FSMContext) -> None:
-    await state.set_state(ToolState.waiting_count)
+    await state.set_state(ToolState.count)
     await call.message.edit_text(
         "<b>Count Text</b>\n\n"
-        "Send text to count characters, words, and lines.\n\n"
-        "Use /cancel to stop.",
+        "Send text to count words, characters, and lines.",
         reply_markup=back_menu(),
     )
     await call.answer()
 
 
-@router.message(ToolState.waiting_count)
+@router.message(ToolState.count)
 async def count_text(message: Message, state: FSMContext) -> None:
     text = (message.text or "").strip()
     if not text:
-        await message.answer("Please send some text.", reply_markup=back_menu())
+        await message.answer("Please send text.", reply_markup=back_menu())
         return
-
-    characters = len(text)
-    words = len(text.split())
-    lines = len(text.splitlines())
+    if len(text) > 4000:
+        await message.answer("Please keep the text under 4,000 characters.", reply_markup=back_menu())
+        return
 
     await state.clear()
     await message.answer(
         "<b>Text Count</b>\n\n"
-        f"Characters: <b>{characters}</b>\n"
-        f"Words: <b>{words}</b>\n"
-        f"Lines: <b>{lines}</b>",
+        f"Characters: <b>{len(text)}</b>\n"
+        f"Words: <b>{len(text.split())}</b>\n"
+        f"Lines: <b>{len(text.splitlines())}</b>",
         reply_markup=main_menu(),
     )
 
 
 @router.callback_query(F.data == "format")
 async def format_start(call: CallbackQuery, state: FSMContext) -> None:
-    await state.set_state(ToolState.waiting_format)
+    await state.set_state(ToolState.format_text)
     await call.message.edit_text(
         "<b>Format Text</b>\n\n"
-        "Send the text you want to format, then choose a style.",
+        "Send the text you want to format.",
         reply_markup=back_menu(),
     )
     await call.answer()
 
 
-@router.message(ToolState.waiting_format)
+@router.message(ToolState.format_text)
 async def format_input(message: Message, state: FSMContext) -> None:
     text = (message.text or "").strip()
     if not text:
-        await message.answer("Please send some text.", reply_markup=back_menu())
+        await message.answer("Please send text.", reply_markup=back_menu())
         return
     if len(text) > 4000:
         await message.answer("Please keep the text under 4,000 characters.", reply_markup=back_menu())
@@ -149,7 +148,7 @@ async def format_input(message: Message, state: FSMContext) -> None:
 @router.callback_query(F.data.startswith("fmt:"))
 async def format_apply(call: CallbackQuery, state: FSMContext) -> None:
     data = await state.get_data()
-    text = data.get("format_text", "")
+    text = data.get("format_text")
 
     if not text:
         await state.clear()
@@ -158,12 +157,15 @@ async def format_apply(call: CallbackQuery, state: FSMContext) -> None:
         return
 
     mode = call.data.split(":", 1)[1]
-    if mode == "upper":
-        result = text.upper()
-    elif mode == "lower":
-        result = text.lower()
-    else:
-        result = text.title()
+    result = {
+        "upper": text.upper(),
+        "lower": text.lower(),
+        "title": text.title(),
+    }.get(mode)
+
+    if result is None:
+        await call.answer("Unknown format.")
+        return
 
     await state.clear()
     await call.message.edit_text(
