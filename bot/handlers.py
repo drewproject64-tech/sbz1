@@ -21,8 +21,8 @@ class ToolState(StatesGroup):
 
 def home_text() -> str:
     return (
-        "👋 <b>Welcome to TextLab TG</b>\n\n"
-        "A simple text utility bot that works directly inside Telegram.\n\n"
+        "<b>SB24GZ Word Bot</b>\n\n"
+        "Simple word and text tools that work directly inside Telegram.\n\n"
         "Choose a tool:"
     )
 
@@ -36,10 +36,10 @@ async def start(message: Message, state: FSMContext) -> None:
 @router.message(Command("help"))
 async def help_command(message: Message) -> None:
     await message.answer(
-        "ℹ️ <b>TextLab TG</b>\n\n"
-        "🧹 Clean Text removes extra spaces and blank lines.\n"
-        "🔢 Count Text counts characters, words, and lines.\n"
-        "🔤 Format Text changes text case.\n\n"
+        "<b>SB24GZ Word Bot</b>\n\n"
+        "Clean Text removes extra spaces and blank lines.\n"
+        "Count Text counts characters, words, and lines.\n"
+        "Format Text changes text case.\n\n"
         "Send /start to open the tools.",
         reply_markup=main_menu(),
     )
@@ -62,8 +62,9 @@ async def main_menu_callback(call: CallbackQuery, state: FSMContext) -> None:
 async def clean_start(call: CallbackQuery, state: FSMContext) -> None:
     await state.set_state(ToolState.waiting_clean)
     await call.message.edit_text(
-        "🧹 <b>Clean Text</b>\n\nSend the text you want to clean. "
-        "Extra spaces and blank lines will be removed.\n\nUse /cancel to stop.",
+        "<b>Clean Text</b>\n\n"
+        "Send the text you want to clean. Extra spaces and blank lines will be removed.\n\n"
+        "Use /cancel to stop.",
         reply_markup=back_menu(),
     )
     await call.answer()
@@ -82,7 +83,7 @@ async def clean_text(message: Message, state: FSMContext) -> None:
     cleaned = "\n".join(" ".join(line.split()) for line in text.splitlines() if line.strip())
     await state.clear()
     await message.answer(
-        f"🧹 <b>Cleaned Text</b>\n\n<code>{cleaned}</code>",
+        f"<b>Cleaned Text</b>\n\n<code>{escape(cleaned)}</code>",
         reply_markup=main_menu(),
     )
 
@@ -91,7 +92,9 @@ async def clean_text(message: Message, state: FSMContext) -> None:
 async def count_start(call: CallbackQuery, state: FSMContext) -> None:
     await state.set_state(ToolState.waiting_count)
     await call.message.edit_text(
-        "🔢 <b>Count Text</b>\n\nSend text to count characters, words, and lines.\n\nUse /cancel to stop.",
+        "<b>Count Text</b>\n\n"
+        "Send text to count characters, words, and lines.\n\n"
+        "Use /cancel to stop.",
         reply_markup=back_menu(),
     )
     await call.answer()
@@ -110,7 +113,7 @@ async def count_text(message: Message, state: FSMContext) -> None:
 
     await state.clear()
     await message.answer(
-        "🔢 <b>Text Count</b>\n\n"
+        "<b>Text Count</b>\n\n"
         f"Characters: <b>{characters}</b>\n"
         f"Words: <b>{words}</b>\n"
         f"Lines: <b>{lines}</b>",
@@ -122,7 +125,7 @@ async def count_text(message: Message, state: FSMContext) -> None:
 async def format_start(call: CallbackQuery, state: FSMContext) -> None:
     await state.set_state(ToolState.waiting_format)
     await call.message.edit_text(
-        "🔤 <b>Format Text</b>\n\n"
+        "<b>Format Text</b>\n\n"
         "Send the text you want to format, then choose a style.",
         reply_markup=back_menu(),
     )
@@ -164,7 +167,7 @@ async def format_apply(call: CallbackQuery, state: FSMContext) -> None:
 
     await state.clear()
     await call.message.edit_text(
-        f"🔤 <b>Formatted Text</b>\n\n<code>{result}</code>",
+        f"<b>Formatted Text</b>\n\n<code>{escape(result)}</code>",
         reply_markup=main_menu(),
     )
     await call.answer()
