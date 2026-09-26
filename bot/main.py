@@ -15,10 +15,10 @@ logging.basicConfig(
 )
 
 BOT_NAME = "Word Tools Bot"
-BOT_SHORT_DESCRIPTION = "Simple word and text tools for Telegram."
+BOT_SHORT_DESCRIPTION = "Simple tools for cleaning, counting, and formatting text."
 BOT_DESCRIPTION = (
-    "Word Tools Bot provides three simple text functions directly in Telegram: "
-    "clean text, count words and characters, and change text case."
+    "Word Tools Bot provides simple text utilities directly in Telegram. "
+    "Clean text, count words and characters, and change text case in a few taps."
 )
 
 
